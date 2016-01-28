@@ -76,8 +76,8 @@ class GRAPE_API {
 
         if (is_wp_error($result)) {
             $error = $result->get_error_message();
-           $this->log(__FUNCTION__, $error);
-           return $error;
+            $this->log(__FUNCTION__, $error);
+            return $error;
         }
 
         $this->log(__FUNCTION__, print_r($result, true));
@@ -97,9 +97,7 @@ class GRAPE_API {
         $post->set_grape_href($response_decoded['href']);
         $post->set_grape_indexed($response_decoded['indexed']);
 
-        return $response_decoded;
-
-        $this->log(__FUNCTION__, 'posted');
+        $this->log(__FUNCTION__, 'done');
     }
 
     function update($post) {
@@ -123,13 +121,15 @@ class GRAPE_API {
 
         if (is_wp_error($result)) {
             $error = $result->get_error_message();
-           $this->log(__FUNCTION__, $error);
-           return $error;
+            $this->log(__FUNCTION__, $error);
+            return $error;
         }
 
         $this->log(__FUNCTION__, $result['body']);
 
-        $result_decoded = json_decode($result['body'], true);
+        $this->log(__FUNCTION__, 'done');
+    }
+
     function delete($post) {
         $this->log(__FUNCTION__);
 
@@ -146,14 +146,15 @@ class GRAPE_API {
 
         if (is_wp_error($result)) {
             $error = $result->get_error_message();
-           $this->log(__FUNCTION__, $error);
-           return $error;
+            $this->log(__FUNCTION__, $error);
+            return $error;
         }
 
         $this->log(__FUNCTION__, $result['body']);
 
         $this->log(__FUNCTION__, 'done');
     }
+
 
 
 
