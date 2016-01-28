@@ -261,8 +261,8 @@ class GRAPE_Post {
 
         if (
             ('private' == $this->post_status && $this->options['privacy_private'] == 'grape_no') ||
-            ('publish' != $this->post_status && 'private' != $this->post_status) ||
-            0 == get_post_meta($this->wp_id, 'grape_sync', true)
+            ('publish' != $this->post_status && 'private' != $this->post_status) //||
+            // 0 == get_post_meta($this->wp_id, 'grape_sync', true)
         ) {
             return true;
         }
@@ -271,12 +271,8 @@ class GRAPE_Post {
     }
 
     function was_synced() {
-        return !$this->was_never_synced();
+        return ("" != $this->grape_href && null != $this->grape_href);
 
-    }
-
-    function was_never_synced() {
-        return ("" == $this->id || null == $this->id || 0 == $this->id);
     }
 
     function smartTruncate($string, $limit, $break=" ", $pad="...") {

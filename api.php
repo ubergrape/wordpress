@@ -80,6 +80,53 @@ class GRAPE_API {
            return $error;
         }
 
+        $this->log(__FUNCTION__, print_r($result, true));
+
+        if ($result['response']['code'] === 400) {
+            $detail = json_decode($result['body'], true)->detail;
+            // if (isset($detail, 'eid') && strstr($detail['eid'], 'already exists in this index') !== false) {
+            //     // we already synced this, but never saved the href?
+            //     // TODO handle this
+            // }
+            // TODO handle 400
+        }
+
+        $response_decoded = json_decode($result['body'], true);
+        grape_debug(print_r($response_decoded, true));
+
+        $post->set_grape_href($response_decoded['href']);
+        $post->set_grape_indexed($response_decoded['indexed']);
+
+        return $response_decoded;
+
+        $this->log(__FUNCTION__, 'posted');
+    }
+
+    function update($post) {
+        $this->log(__FUNCTION__);
+
+        $url = $post->grape_href;
+        grape_debug($url);
+        $args = array(
+            'method' => 'PUT',
+            'headers' => $this->get_headers(),
+            'body' => json_encode(array(
+                'name' => $post->title,
+                'url' => $post->url,
+                'description' => $post->description,
+                 ), JSON_UNESCAPED_SLASHES)
+        );
+
+        $this->log(__FUNCTION__, print_r($args, true));
+
+        $result = wp_remote_request($url, $args);
+
+        if (is_wp_error($result)) {
+            $error = $result->get_error_message();
+           $this->log(__FUNCTION__, $error);
+           return $error;
+        }
+
         $this->log(__FUNCTION__, $result['body']);
 
         $result_decoded = json_decode($result['body'], true);
@@ -87,7 +134,9 @@ class GRAPE_API {
         return $result_decoded;
 
         $this->log(__FUNCTION__, 'posted');
-}
+    }
+
+
 
     private function log($function_name, $message="start") {
         grape_debug("Grape API ($function_name): $message");

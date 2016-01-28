@@ -23,37 +23,33 @@ class Grape_Controller {
         $api = new GRAPE_API();
         $respone = $api->create($post);
 
-        $post->set_grape_href($response->href);
-        $post->set_grape_indexed($response->indexed);
-
         // $grape_synced = $post_ID;
 
         return $post_ID;
     }
 
     static function edit($post_ID) {
-        // TODO: handle edit
-
         // global $grape_synced;
 
-        // if ($post_ID == $grape_synced || !Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
-        //     return $post_ID; // nothing to do here
-        // }
+        if (!Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
+            return $post_ID; // nothing to do here
+        }
 
-        // $post = new GRAPE_Post($post_ID);
+        $post = new GRAPE_Post($post_ID);
 
-        // if (!$post->was_synced()) {
-        //     grape_debug("controller: edit -> post (was never synced before)");
-        //     return Grape_Controller::post($post_ID);
-        // }
+        if (!$post->was_synced()) {
+            grape_debug("controller: edit -> post (was never synced before)");
+            return Grape_Controller::post($post_ID);
+        }
 
-        // if ($post->should_be_deleted_because_private()) {
-        //     grape_debug("controller: edit -> delete (should be deleted, private)");
-        //     return Grape_Controller::delete($post_ID);
-        // }
+        if ($post->should_be_deleted_because_private()) {
+            grape_debug("controller: edit -> delete (should be deleted, private)");
+            return Grape_Controller::delete($post_ID);
+        }
 
-        // $api = new GRAPE_API();
-        // $api->update($post);
+        $api = new GRAPE_API();
+        $api->update($post);
+
         // $grape_synced = $post_ID;
 
         return $post_ID;
