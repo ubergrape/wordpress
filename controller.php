@@ -56,23 +56,21 @@ class Grape_Controller {
     }
 
     static function delete($post_ID) {
-        // TODO: handle delete
-
         // global $grape_synced;
 
-        // if ($post_ID == $grape_synced || !Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
-        //     return $post_ID;
-        // }
+        if (!Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
+            return $post_ID;
+        }
 
-        // $post = new GRAPE_Post($post_ID);
+        $post = new GRAPE_Post($post_ID);
 
-        // if ($post->was_never_synced()) {
-        //     grape_debug("controller: delete -> STOP (was never synced before)");
-        //     return $post_ID;
-        // }
+        if (!$post->was_synced()) {
+            grape_debug("controller: delete -> STOP (was never synced before)");
+            return $post_ID;
+        }
 
-        // $api = new GRAPE_API();
-        // $api->delete($post);
+        $api = new GRAPE_API();
+        $api->delete($post);
         // $grape_synced = $post_ID;
 
         return $post_ID;

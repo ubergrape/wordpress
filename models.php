@@ -260,7 +260,7 @@ class GRAPE_Post {
         // - It was synced but now it's set to not sync
 
         if (
-            ('private' == $this->post_status && $this->options['privacy_private'] == 'grape_no') ||
+            ('private' == $this->post_status) ||
             ('publish' != $this->post_status && 'private' != $this->post_status) //||
             // 0 == get_post_meta($this->wp_id, 'grape_sync', true)
         ) {

@@ -130,10 +130,29 @@ class GRAPE_API {
         $this->log(__FUNCTION__, $result['body']);
 
         $result_decoded = json_decode($result['body'], true);
+    function delete($post) {
+        $this->log(__FUNCTION__);
 
-        return $result_decoded;
+        $url = $post->grape_href;
+        grape_debug($url);
+        $args = array(
+            'method' => 'DELETE',
+            'headers' => $this->get_headers(),
+        );
 
-        $this->log(__FUNCTION__, 'posted');
+        $this->log(__FUNCTION__, print_r($args, true));
+
+        $result = wp_remote_request($url, $args);
+
+        if (is_wp_error($result)) {
+            $error = $result->get_error_message();
+           $this->log(__FUNCTION__, $error);
+           return $error;
+        }
+
+        $this->log(__FUNCTION__, $result['body']);
+
+        $this->log(__FUNCTION__, 'done');
     }
 
 
