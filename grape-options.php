@@ -6,7 +6,7 @@ function grape_get_options() {
             'api_url'       => '',
             'api_token'     => '',
             'api_success'   => '',
-            'post_types'    => array(),
+            'post_types'    => array( 'post' => 1, 'page' => 1),
     );
 
     $options = get_option('grape');
