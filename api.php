@@ -83,12 +83,14 @@ class GRAPE_API {
         $this->log(__FUNCTION__, print_r($result, true));
 
         if ($result['response']['code'] === 400) {
-            $detail = json_decode($result['body'], true)->detail;
+            $this->log(__FUNCTION__, "ERROR 400!" . print_r($result['response'], true));
+            //$detail = json_decode($result['body'], true)->detail;
             // if (isset($detail, 'eid') && strstr($detail['eid'], 'already exists in this index') !== false) {
             //     // we already synced this, but never saved the href?
             //     // TODO handle this
             // }
             // TODO handle 400
+            return;
         }
 
         $response_decoded = json_decode($result['body'], true);
@@ -104,7 +106,6 @@ class GRAPE_API {
         $this->log(__FUNCTION__);
 
         $url = $post->grape_href;
-        grape_debug($url);
         $args = array(
             'method' => 'PUT',
             'headers' => $this->get_headers(),
@@ -134,7 +135,6 @@ class GRAPE_API {
         $this->log(__FUNCTION__);
 
         $url = $post->grape_href;
-        grape_debug($url);
         $args = array(
             'method' => 'DELETE',
             'headers' => $this->get_headers(),
