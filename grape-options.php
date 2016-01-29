@@ -44,7 +44,7 @@ function grape_validate_options($input) {
     }
 
     // Send custom updated message
-    if( isset($input['api_token']) || isset($input['api_url'])) {
+    if( isset($input['api_token']) || isset($input['api_url']) || isset($input['post_types'])) {
         $msg = implode('<br />', $msg);
 
         if (empty($msg)) {
@@ -125,6 +125,37 @@ function grape_display_options() {
                             <?php if ($options['api_success'] === true): ?>
                                 <span class="dashicons dashicons-yes"></span>
                             <?php endif; ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+
+        <fieldset class="options">
+            <legend><h3><?php _e('Index Options', 'grape'); ?></h3></legend>
+            <table class="form-table">
+                <tbody>
+                    <tr>
+                        <th scope="row">
+                            <label for="grape[post_types]"><?php _e('Post types to index', 'grape'); ?></label>
+                        </th>
+                        <td>
+                            <?php
+                                $args = array(
+                                   'public'   => true,
+                                   '_builtin' => true,
+                                );
+                                $post_types = get_post_types($args, 'objects');
+                                if (!is_array($options['post_types'])) $options['post_types'] = (array)$options['post_types'];
+                            ?>
+                            <?php foreach ( $post_types as $post_type ): ?>
+                                <label>
+                                    <input name="grape[post_types][<?php echo $post_type->name ?>]" type="checkbox" value="1"
+                                    <?php checked(array_key_exists($post_type->name, $options['post_types']) && $options['post_types'][$post_type->name] == 1, true); ?>/>
+                                    <?php echo $post_type->labels->name ?>
+                                </label>
+                                <br>
+                            <?php endforeach; ?>
                         </td>
                     </tr>
                 </tbody>
