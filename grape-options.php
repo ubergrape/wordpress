@@ -3,10 +3,10 @@
 function grape_get_options() {
     // set defaults
     $defaults = array(
-            'api_url'           => '',
-            'api_token'           => '',
-            'api_success'       => '',
-
+            'api_url'       => '',
+            'api_token'     => '',
+            'api_success'   => '',
+            'post_types'    => array(),
     );
 
     $options = get_option('grape');
@@ -107,7 +107,7 @@ function grape_display_options() {
                 <tbody>
                     <tr>
                         <th scope="row">
-                            <label for="blogname"><?php _e('API URL', 'grape'); ?></label>
+                            <label for="grape[api_url]"><?php _e('API URL', 'grape'); ?></label>
                         </th>
                         <td>
                             <input name="grape[api_url]" type="text" value="<?php echo $options['api_url']; ?>" class="regular-text">
@@ -118,7 +118,7 @@ function grape_display_options() {
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="blogname"><?php _e('API Token', 'grape'); ?></label>
+                            <label for="grape[api_token]"><?php _e('API Token', 'grape'); ?></label>
                         </th>
                         <td>
                             <input name="grape[api_token]" type="text" value="<?php echo $options['api_token']; ?>" class="regular-text">
