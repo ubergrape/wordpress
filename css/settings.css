@@ -1,0 +1,56 @@
+/* Core functionality inspired by http://www.ghosthorses.co.uk/production-diary/super-simple-responsive-progress-bar/ */
+/* Copied from https://de.wordpress.org/plugins/responsive-progress-bar/ */
+
+.grape-progress {
+    width: 200px;
+    height: 28px;
+}
+
+.grape-progress-wrap {
+    display: inline-block;
+    background: #0073aa;
+    overflow: hidden;
+    position: relative;
+    border-radius: 3px;
+}
+
+.grape-progress-wrap .grape-progress-bar {
+    background: #ccc;
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+.grape-progress-text {
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    margin: 0 5px;
+}
+
+.grape-progress-bar {
+    background: #ccc;
+}
+
+
+.grape-loading {
+    margin-top: 5px;
+    margin-right: 6px;
+    margin-left: 2px;
+    display: inline-block;
+}
+
+.grape-progress-container {
+    display: inline-flex;
+}
+
+.grape-progress-container.hidden,
+.grape-progress-done.hidden {
+    display: none;
+}
+
+.grape-progress-done {
+    margin-left: 10px;
+    margin-top: 5px;
+    display: inline-block;
+}

@@ -69,14 +69,6 @@ function grape_plugin_dir_url() {
     return plugins_url(basename(dirname(__FILE__))) . '/';
 }
 
-/* Admin options page style */
-function grape_settings_css() { ?>
-    <style type="text/css">
-        <?php //include('css/settings.css');?>
-    </style>
-<?php
-}
-
 function grape_is_current_user_connected() {
     $options = grape_get_options();
 

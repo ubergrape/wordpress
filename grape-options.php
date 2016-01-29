@@ -60,6 +60,7 @@ function grape_validate_options($input) {
 
 // ---- Options Page -----
 
+
 function grape_add_menu() {
     $pg = add_submenu_page(
         'options-general.php',
@@ -69,14 +70,32 @@ function grape_add_menu() {
         'grape',
         'grape_display_options'
     );
-    add_action("admin_head-$pg", 'grape_settings_css');
+    // add_action("admin_head-$pg", 'grape_settings_css');
     // register setting
-    add_action('admin_init', 'register_grape_settings');
+    add_action('admin_init', 'grape_register_settings');
+    // register JS
+    add_action ('admin_enqueue_scripts', 'grape_enqueue_scripts');
+}
+
+/* Admin options page style */
+function grape_settings_css() { ?>
+    <style type="text/css">
+        <?php include('css/settings.css');?>
+    </style>
+<?php
 }
 
 /* Register settings */
-function register_grape_settings() {
+function grape_register_settings() {
     register_setting( 'grape', 'grape', 'grape_validate_options');
+}
+
+/* Register JS */
+function grape_enqueue_scripts() {
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('grape-settings-scripts', grape_plugin_dir_url() . 'js/settings.js', array(), '1.0.0', true );
+    wp_enqueue_style('grape-settings-style', grape_plugin_dir_url() . 'css/settings.css');
+
 }
 
 // Add link to options page from plugin list
@@ -85,6 +104,44 @@ function grape_plugin_actions($links) {
     $new_links = array();
     $new_links[] = '<a href="admin.php?page=grape">' . __('Settings', 'grape') . '</a>';
     return array_merge($new_links, $links);
+}
+
+
+add_action( 'wp_ajax_grape_full_sync', 'grape_full_sync' );
+
+function grape_full_sync() {
+    // TODO actually implement
+
+    global $wpdb;
+
+    $postId = null;
+
+    if (!isset($_POST['postId'])) {
+        $nextPostId = 77;
+    } else {
+        $postId = intval( $_POST['postId'] );
+        $nextPostId = $postId + 1;
+    }
+
+    sleep(1); // fake
+
+    if (null === $postId) {
+        $response = array(
+            "postsTotal" => 12,
+            "nextPostId" => $nextPostId,
+        );
+    } else {
+        $response = array(
+            "postsTotal" => 12,
+            "currentPostId" => $postId,
+            "currentPostTitle" => "Something blah",
+            "nextPostId" => $nextPostId,
+        );
+    }
+
+    echo json_encode($response);
+
+    wp_die(); // this is required to terminate immediately and return a proper response
 }
 
 // Display the options page
@@ -167,6 +224,25 @@ function grape_display_options() {
             <input type="submit" name="grape[update_grape_options]" value="<?php esc_attr_e('Save Changes'); ?>" class="button button-primary" />
         </p>
     </form>
+
+    <hr>
+
+    <h2>Tools</h2>
+
+    <input type="button" name="grape[full_sync]" id="grape-full-sync" value="<?php esc_attr_e('Sync all posts with ChatGrape'); ?>" class="button button-secondary" />
+
+
+    <div class='grape-progress-container hidden'>
+        <span class="grape-loading"><img src="<?php echo grape_plugin_dir_url() ?>img/loading.gif"></span>
+        <div class='grape-progress-wrap grape-progress' data-progress-percent='0' data-speed='500' style=''>
+            <div class='grape-progress-bar grape-progress'></div>
+            <div class='grape-progress-text'></div>
+        </div>
+    </div>
+    <span class='grape-progress-done hidden'>
+        <?php _e('done'); ?> <span class="dashicons dashicons-yes"></span>
+    </span>
+    <p class="description"><?php _e('Please press "Save Changes" before running this if you changed any setting.'); ?></p>
 </div>
 
 <?php
