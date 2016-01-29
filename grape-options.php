@@ -94,6 +94,7 @@ function grape_display_options() {
 <? include_once 'options-head.php';  ?>
 
 <div class="wrap">
+    <h1><?php _e('Grape Settings', 'grape'); ?></h1>
     <form method="post" id="grape" action="options.php">
         <?php
         settings_fields('grape');
@@ -102,7 +103,7 @@ function grape_display_options() {
         ?>
 
         <fieldset class="options">
-            <legend><h3><?php _e('Grape API Options', 'grape'); ?></h3></legend>
+            <h2 class="title"><?php _e('API Credentials', 'grape'); ?></h2>
             <table class="form-table">
                 <tbody>
                     <tr>
@@ -132,7 +133,7 @@ function grape_display_options() {
         </fieldset>
 
         <fieldset class="options">
-            <legend><h3><?php _e('Index Options', 'grape'); ?></h3></legend>
+            <h2 class="title"><?php _e('Index Options', 'grape'); ?></h2>
             <table class="form-table">
                 <tbody>
                     <tr>
@@ -163,7 +164,7 @@ function grape_display_options() {
         </fieldset>
 
         <p class="submit">
-            <input type="submit" name="grape[update_grape_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
+            <input type="submit" name="grape[update_grape_options]" value="<?php esc_attr_e('Save Changes'); ?>" class="button button-primary" />
         </p>
     </form>
 </div>
