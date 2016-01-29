@@ -110,33 +110,46 @@ function grape_plugin_actions($links) {
 add_action( 'wp_ajax_grape_full_sync', 'grape_full_sync' );
 
 function grape_full_sync() {
-    // TODO actually implement
-
     global $wpdb;
 
-    $postId = null;
-
-    if (!isset($_POST['postId'])) {
-        $nextPostId = 77;
-    } else {
-        $postId = intval( $_POST['postId'] );
-        $nextPostId = $postId + 1;
+    // we need an array of post types that looks like array("post", "page")
+    $options = grape_get_options();
+    $post_types = array();
+    foreach ($options['post_types'] as $post_type => $value) {
+        if (1 == $value) {
+            $post_types[] = $post_type;
+        }
     }
 
-    sleep(1); // fake
+    // get all the posts from the DB. query takes multiple post types
+    $args = array(
+        'post_type' => $post_types
+    );
+    $posts = get_posts($args);
 
-    if (null === $postId) {
-        $response = array(
-            "postsTotal" => 12,
-            "nextPostId" => $nextPostId,
-        );
-    } else {
-        $response = array(
-            "postsTotal" => 12,
-            "currentPostId" => $postId,
-            "currentPostTitle" => "Something blah",
-            "nextPostId" => $nextPostId,
-        );
+    $post_count = count($posts);
+
+    // $post_id is not the real post id! it's just the index in the list
+    $post_id = 0;
+    if (isset($_POST['postId'])) {
+        $post_id = intval($_POST['postId']);
+    }
+    $next_post_id = $post_id + 1;
+
+    $current_post = $posts[$post_id];
+
+    grape_debug('Full Sync: post id ' . $current_post->ID);
+    Grape_Controller::post($current_post->ID);
+
+    $response = array(
+        'postsTotal' => $post_count,
+        'currentPostId' => $post_id,
+        'currentPostTitle' => $current_post->title,
+
+    );
+
+    if ($next_post_id < $post_count) {
+        $response['nextPostId'] = $next_post_id;
     }
 
     echo json_encode($response);

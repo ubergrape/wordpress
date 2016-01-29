@@ -59,7 +59,7 @@ jQuery(function($) {
 				i += 1;
 				setProgressPercentage(Math.round((i/postsTotal)*100));
 				moveProgressBar();
-				if (i<=postsTotal) {
+				if (i<postsTotal) {
 					iterate();
 				} else {
 					done();
