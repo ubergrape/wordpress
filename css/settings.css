@@ -54,3 +54,7 @@
     margin-top: 5px;
     display: inline-block;
 }
+
+.grape-warning {
+    color: #D21C1C;
+}

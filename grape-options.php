@@ -166,7 +166,7 @@ function grape_display_options() {
 
 <? include_once 'options-head.php';  ?>
 
-<div class="wrap">
+<div class="wrap grape">
     <h1><?php _e('Grape Settings', 'grape'); ?></h1>
     <form method="post" id="grape" action="options.php">
         <?php
@@ -226,6 +226,9 @@ function grape_display_options() {
                                     <input name="grape[post_types][<?php echo $post_type->name ?>]" type="checkbox" value="1"
                                     <?php checked(array_key_exists($post_type->name, $options['post_types']) && $options['post_types'][$post_type->name] == 1, true); ?>/>
                                     <?php echo $post_type->labels->name ?>
+                                    <?php if (!post_type_supports($post_type->name, 'title')): ?>
+                                        <span class="grape-warning"><?php _e('Warning: These posts have no title'); ?></span>
+                                    <?php endif; ?>
                                 </label>
                                 <br>
                             <?php endforeach; ?>
