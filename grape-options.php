@@ -5,7 +5,7 @@ function grape_get_options() {
     $defaults = array(
             'api_url'       => '',
             'api_token'     => '',
-            'api_success'   => '',
+            'api_success'   => false,
             'post_types'    => array( 'post' => 1, 'page' => 1),
     );
 
@@ -22,6 +22,9 @@ function grape_validate_options($input) {
 
     $msg = array();
     $msgtype = 'error';
+
+    // don't lose fields
+    $input['api_success'] = $options['api_success'];
 
     // API token
     // only test the connection if api token or url change or previous attempt fails
