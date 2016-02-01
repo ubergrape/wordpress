@@ -214,7 +214,6 @@ function grape_display_options() {
                             <?php
                                 $args = array(
                                    'public'   => true,
-                                   '_builtin' => true,
                                 );
                                 $post_types = get_post_types($args, 'objects');
                                 if (!is_array($options['post_types'])) $options['post_types'] = (array)$options['post_types'];
