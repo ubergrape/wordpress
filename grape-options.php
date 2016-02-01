@@ -18,15 +18,15 @@ function grape_get_options() {
 
 // Validation/sanitization. Add errors to $msg[].
 function grape_validate_options($input) {
-    grape_debug("grape_validate_options!!!!!!");
-
-    global $grape_error;
+    $options = get_option('grape');
 
     $msg = array();
     $msgtype = 'error';
 
     // API token
-    if (isset($input['api_token']) && isset($input['api_url'])) {
+    // only test the connection if api token or url change or previous attempt fails
+    if (isset($input['api_token']) && isset($input['api_url']) &&
+        ($input['api_token'] != $options['api_token'] || $input['api_url'] != $options['api_url'] || false == $options['api_success'])) {
         $input['api_success'] = false;
 
         $api_token = $input['api_token'];
