@@ -1,6 +1,6 @@
 <?php
 
-function base64_encode_image ($filename=string,$filetype=string) {
+function grape_base64_encode_image ($filename=string,$filetype=string) {
     if ($filename &&  file_exists($filename)) {
         $imgbinary = fread(fopen($filename, "r"), filesize($filename));
         return base64_encode($imgbinary);
@@ -143,7 +143,7 @@ class GRAPE_Post {
                 $resized_image = $image;
                 // TODO: inform user about missing GD library etc.
             }
-            $data['image'] = base64_encode_image($resized_image);
+            $data['image'] = grape_base64_encode_image($resized_image);
             $data['text'] = $this->content; // find_a_post_image can modify content
         }
 
