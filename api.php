@@ -50,7 +50,7 @@ class GRAPE_API {
 
         if ($result['response']['code'] === 403) {
             $response_decoded = json_decode($result['body'], true);
-            return $response_decoded->detail;
+            return $response_decoded['detail'];
         }
 
         return "Unexpected Error";
