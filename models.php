@@ -69,6 +69,32 @@ class GRAPE_Post {
         }
     }
 
+    function serialize() {
+        $post_format = get_post_format($this->wp_id);
+        $post_format = $post_format ? (' (' . $post_format . ')') : '';
+        $post_type = get_post_type_object(get_post_type($this->wp_id))->labels->singular_name;
+
+        return array(
+            'name' => $this->title,
+            'url' => $this->url,
+            'description' => $this->description,
+            'meta' => array(
+                array(
+                    'label' => 'Author',
+                    'value' => get_the_author_meta('display_name', $this->wp_post->post_author)
+                ),
+                array(
+                    'label' => 'Created',
+                    'value' => $this->wp_post->post_date
+                ),
+                array(
+                    'label' => 'Type',
+                    'value' => $post_type . $post_format
+                ),
+            )
+        );
+    }
+
     function import_tags($wp_post_id) {
         $tags = array();
 

@@ -60,14 +60,11 @@ class GRAPE_API {
         $this->log(__FUNCTION__);
 
         $url = $this->api_url;
+        $post_data = $post->serialize();
+        $post_data['eid'] = $post->wp_id;
         $args = array(
             'headers' => $this->get_headers(),
-            'body' => json_encode(array(
-                'eid' => $post->wp_id,
-                'name' => $post->title,
-                'url' => $post->url,
-                'description' => $post->description,
-                 ), JSON_UNESCAPED_SLASHES)
+            'body' => json_encode($post_data, JSON_UNESCAPED_SLASHES)
         );
 
         $this->log(__FUNCTION__, print_r($args, true));
@@ -106,14 +103,11 @@ class GRAPE_API {
         $this->log(__FUNCTION__);
 
         $url = $post->grape_href;
+        $post_data = $post->serialize();
         $args = array(
             'method' => 'PUT',
             'headers' => $this->get_headers(),
-            'body' => json_encode(array(
-                'name' => $post->title,
-                'url' => $post->url,
-                'description' => $post->description,
-                 ), JSON_UNESCAPED_SLASHES)
+            'body' => json_encode($post_data, JSON_UNESCAPED_SLASHES)
         );
 
         $this->log(__FUNCTION__, print_r($args, true));
