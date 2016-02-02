@@ -5,6 +5,7 @@ Requires at least: 4.4.1
 Tested up to: 4.4.1
 Stable tag: trunk
 
+Use WordPress together with Grape
 
 == Description ==
 
