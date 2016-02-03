@@ -110,8 +110,24 @@ function grape_plugin_actions($links) {
 }
 
 
-add_action( 'wp_ajax_grape_full_sync', 'grape_full_sync' );
 
+add_action( 'wp_ajax_grape_full_sync_start', 'grape_full_sync_start' );
+function grape_full_sync_start() {
+    global $wpdb;
+
+    $options = grape_get_options();
+    $api_token = $options['api_token'];
+    $api_url = $options['api_url'];
+
+    $api = new GRAPE_API($api_token, $api_url);
+    $result = $api->delete_everything();
+
+    wp_die(); // this is required to terminate immediately and return a proper response
+}
+
+
+
+add_action( 'wp_ajax_grape_full_sync', 'grape_full_sync' );
 function grape_full_sync() {
     global $wpdb;
 

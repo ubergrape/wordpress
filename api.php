@@ -56,6 +56,31 @@ class GRAPE_API {
         return "Unexpected Error";
     }
 
+    function delete_everything() {
+        $this->log(__FUNCTION__);
+
+        $url = $post->api_url;
+        $args = array(
+            'method' => 'DELETE',
+            'headers' => $this->get_headers()
+        );
+
+        $this->log(__FUNCTION__, $url);
+        $this->log(__FUNCTION__, print_r($args, true));
+
+        $result = wp_remote_request($url, $args);
+
+        if (is_wp_error($result)) {
+            $error = $result->get_error_message();
+            $this->log(__FUNCTION__, $error);
+            return $error;
+        }
+
+        $this->log(__FUNCTION__, 'done');
+
+        return true;
+    }
+
     function create($post) {
         $this->log(__FUNCTION__);
 

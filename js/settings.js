@@ -44,30 +44,35 @@ jQuery(function($) {
 		var nextPostId = null;
 		var i = 0;
 
-		var iterate = function() {
-			data = {
-				'action': 'grape_full_sync',
-			};
-			if (null !== nextPostId) {
-				data['postId'] = nextPostId;
-				console.log("sync post nr", i, "id", nextPostId);
-			}
-			$.post(ajaxurl, data, function(response) {
-				response = JSON.parse(response);
-				postsTotal = response['postsTotal'];
-				nextPostId = response['nextPostId'];
-				i += 1;
-				setProgressPercentage(Math.round((i/postsTotal)*100));
-				moveProgressBar();
-				if (i<postsTotal) {
-					iterate();
-				} else {
-					done();
-				}
-			});
+		data = {
+			'action': 'grape_full_sync_start',
 		};
+		$.post(ajaxurl, data, function(response) {
+			var iterate = function() {
+				data = {
+					'action': 'grape_full_sync',
+				};
+				if (null !== nextPostId) {
+					data['postId'] = nextPostId;
+					console.log("sync post nr", i, "id", nextPostId);
+				}
+				$.post(ajaxurl, data, function(response) {
+					response = JSON.parse(response);
+					postsTotal = response['postsTotal'];
+					nextPostId = response['nextPostId'];
+					i += 1;
+					setProgressPercentage(Math.round((i/postsTotal)*100));
+					moveProgressBar();
+					if (i<postsTotal) {
+						iterate();
+					} else {
+						done();
+					}
+				});
+			};
 
-		iterate();
+			iterate();
+		});
 
 	});
 
