@@ -126,7 +126,8 @@ function grape_full_sync() {
 
     // get all the posts from the DB. query takes multiple post types
     $args = array(
-        'post_type' => $post_types
+        'post_type' => $post_types,
+        'posts_per_page' => -1
     );
     $posts = get_posts($args);
 
