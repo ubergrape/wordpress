@@ -67,6 +67,9 @@ class GRAPE_Post {
             $this->description = $content[0];
             $this->content = $content[1];
         }
+
+        /* find an image */
+        $this->image_url    = $this->find_a_post_image_url();
     }
 
     function serialize() {
@@ -74,7 +77,7 @@ class GRAPE_Post {
         $post_format = $post_format ? (' (' . $post_format . ')') : '';
         $post_type = get_post_type_object(get_post_type($this->wp_id))->labels->singular_name;
 
-        return array(
+        $serialized = array(
             'name' => $this->title,
             'url' => $this->url,
             'description' => $this->description,
@@ -91,8 +94,18 @@ class GRAPE_Post {
                     'label' => 'Type',
                     'value' => $post_type . $post_format
                 ),
-            )
+            ),
         );
+
+        if ($this->image_url) {
+            $serialized['preview'] = array(
+                'image' => array(
+                    'url' => $this->image_url
+                )
+            );
+        }
+
+        return $serialized;
     }
 
     function import_tags($wp_post_id) {
@@ -130,53 +143,6 @@ class GRAPE_Post {
         add_post_meta($this->wp_id, '_grape_indexed', $grape_indexed, true);
     }
 
-    function urlencoded() {
-        // example:
-        // title=this+is+a+title&pub_status=3&description=this+is+a+description&language=en&text=this+is+the+body+text
-        $description = $this->description;
-        $overflow = '';
-        $desc_len = strlen($description);
-        if($desc_len > GRAPE_MAXLENGTH_DESCRIPTION){
-            // truncate description at sentence break and add the stripped string
-            // to the article text
-            $description = $this->smartTruncate($description, GRAPE_MAXLENGTH_DESCRIPTION, '.', '');
-            $overflow = str_replace($description, '', $this->description);
-            $overflow = $overflow.'<br />';
-        }
-
-
-        $data = array (
-            'title'             => $this->title,
-            'pub_status'        => 3, // 0=Unpublished, 3=Published
-            'pub_date'          => $this->pub_date,
-            'description'       => $description,
-            'language'          => $this->language,
-            'text'              => $overflow.$this->content,
-            //'tags'                => json_encode($this->tags),
-            'external_post_id'  => $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
-            'external_post_url' => get_permalink($this->wp_id),
-        );
-
-        // set pub_status to 5 (TEST) if article is a published test article
-        if(intval($this->is_test) == 1 && $data['pub_status'] == 3){
-          $data['pub_status'] = 5;
-        }
-
-        // Check for post image
-        if($image = $this->find_a_post_image()){
-            $resized_image = image_resize($image, GRAPE_MAXWIDTH_IMAGE, GRAPE_MAXHEIGHT_IMAGE, false, 'newsgrape');
-            if (is_wp_error($resized_image)) {
-                $resized_image = $image;
-                // TODO: inform user about missing GD library etc.
-            }
-            $data['image'] = grape_base64_encode_image($resized_image);
-            $data['text'] = $this->content; // find_a_post_image can modify content
-        }
-
-        return http_build_query($data);
-    }
-
-
     /* finds a post image:
      * 1) post-thumbnail
      * 2) first image in post
@@ -184,17 +150,17 @@ class GRAPE_Post {
      *
      * attention: modifies $this->content
      */
-    function find_a_post_image() {
-        $image = false;
+    function find_a_post_image_url() {
+        $image_url = false;
 
         // Check for post image
         if(current_theme_supports('post-thumbnails') && null!=get_post_thumbnail_id($this->wp_id)){
-            $image = get_attached_file(get_post_thumbnail_id($this->wp_id));
+            $image_url = wp_get_attachment_url(get_post_thumbnail_id($this->wp_id));
             grape_debug('post image found');
         }
 
         // if we have no post image check for images inside content
-        if(!$image) {
+        if(!$image_url) {
 
             // strip html except img
             $stripped_content = trim(str_replace('&nbsp;','',strip_tags($this->wp_post->post_content,'<img>')));
@@ -206,22 +172,20 @@ class GRAPE_Post {
             if(count($matches) > 0 && 2==count($matches[0])) {
 
                 // first image
-                $image_url = $matches[0][1];
-                $image_tag = $matches[0][0];
+                $found_image_url = $matches[0][1];
+                $found_image_tag = $matches[0][0];
 
-                grape_debug("image tag found in post: $image_url");
+                grape_debug("image tag found in post: $found_image_url");
 
                 // wordpress resizes images and gives them names like image-150x150.jpg
-                $image_ori_url = preg_replace('/\-[0-9]+x[0-9]+/', '', $image_url);
-                grape_debug("original image: $image_ori_url");
+                $image_url = preg_replace('/\-[0-9]+x[0-9]+/', '', $found_image_url);
+                grape_debug("original image: $image_url");
 
-                $image = $this->get_image_path_from_url($image_ori_url);
-
-                if($image) {
+                if($image_url) {
                     // does the post start with the image? then remove image
-                    if(0==strpos($stripped_content, $image_tag)) {
+                    if(0==strpos($stripped_content, $found_image_tag)) {
                         grape_debug('post starts with image, removing image from content');
-                        $this->content = str_replace($image_tag, '', $this->content);
+                        $this->content = str_replace($found_image_tag, '', $this->content);
                     }
                 } else {
                     grape_debug('image not found mediathek, ignoring');
@@ -229,36 +193,11 @@ class GRAPE_Post {
             }
         }
 
-        if(!$image) {
+        if(!$image_url) {
             grape_debug('no usable image found in post');
         }
 
-        return $image;
-    }
-
-    function get_image_path_from_url($image_ori_url) {
-        // find the image in the mediathek
-        // hint: there can be images in the gallery which are not in in the post content
-        //       also the post can contain images which are not
-
-        $args = array(
-            'post_type' => 'attachment',
-            'post_mime_type' => 'image',
-            'numberposts' => null,
-            'post_status' => null,
-        );
-        $attachments = get_posts($args);
-        if (0 < count($attachments)) {
-            foreach($attachments as $attachment) {
-                $att_url = wp_get_attachment_url($attachment->ID);
-                if (($att_url == $image_url) || ($att_url == $image_ori_url)) {
-                    grape_debug('image found in mediathek');
-                    return get_attached_file($attachment->ID);
-                }
-            }
-        }
-
-        return null;
+        return $image_url;
     }
 
     function should_be_synced() {
