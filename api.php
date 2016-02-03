@@ -67,6 +67,7 @@ class GRAPE_API {
             'body' => json_encode($post_data, JSON_UNESCAPED_SLASHES)
         );
 
+        $this->log(__FUNCTION__, $url);
         $this->log(__FUNCTION__, print_r($args, true));
 
         $result = wp_remote_post($url, $args);
@@ -110,6 +111,7 @@ class GRAPE_API {
             'body' => json_encode($post_data, JSON_UNESCAPED_SLASHES)
         );
 
+        $this->log(__FUNCTION__, $url);
         $this->log(__FUNCTION__, print_r($args, true));
 
         $result = wp_remote_request($url, $args);
@@ -134,6 +136,7 @@ class GRAPE_API {
             'headers' => $this->get_headers(),
         );
 
+        $this->log(__FUNCTION__, $url);
         $this->log(__FUNCTION__, print_r($args, true));
 
         $result = wp_remote_request($url, $args);
