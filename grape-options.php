@@ -247,7 +247,7 @@ function grape_display_options() {
 
     <h2>Tools</h2>
 
-    <input type="button" name="grape[full_sync]" id="grape-full-sync" value="<?php esc_attr_e('Sync all posts with ChatGrape'); ?>" class="button button-secondary" />
+    <input type="button" name="grape[full_sync]" id="grape-full-sync" value="<?php esc_attr_e('Sync all posts with Grape'); ?>" class="button button-secondary" />
 
 
     <div class='grape-progress-container hidden'>
