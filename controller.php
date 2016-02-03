@@ -1,7 +1,7 @@
 <?php
 
 class Grape_Controller {
-    static function post($post_ID) {
+    static function post($post_ID, $force) {
         // global $grape_synced;
 
         if (!Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
@@ -15,7 +15,7 @@ class Grape_Controller {
             return $post_ID;
         }
 
-        if ($post->was_synced()) {
+        if ($post->was_synced() && !$force) {
             grape_debug("controller: post -> edit (was synced before)");
             return Grape_Controller::edit($post_ID);
         }
