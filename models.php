@@ -136,12 +136,12 @@ class GRAPE_Post {
 
     function set_grape_href($grape_href) {
         $this->grape_href = $grape_href;
-        add_post_meta($this->wp_id, '_grape_href', $grape_href, true);
+        update_post_meta($this->wp_id, '_grape_href', $grape_href);
     }
 
     function set_grape_indexed($grape_indexed) {
         $this->grape_indexed = $grape_indexed;
-        add_post_meta($this->wp_id, '_grape_indexed', $grape_indexed, true);
+        update_post_meta($this->wp_id, '_grape_indexed', $grape_indexed);
     }
 
     /* finds a post image:
