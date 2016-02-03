@@ -67,6 +67,7 @@ class GRAPE_Post {
             $this->description = $content[0];
             $this->content = $content[1];
         }
+        $this->description = strip_tags($this->description);
 
         /* find an image */
         $this->image_url    = $this->find_a_post_image_url();
