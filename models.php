@@ -51,8 +51,7 @@ class GRAPE_Post {
         $this->url          = get_permalink($wp_post_id);
         $this->post_status  = $wp_post->post_status;
         $this->pub_date     = get_post_time('U', true, $wp_post);
-        $this->title        = get_the_title($wp_post_id);
-        $this->title_plain  = strip_tags(@$this->title);
+        $this->title        = html_entity_decode(strip_tags(get_the_title($wp_post_id)));
         $this->content      = $the_content;
         //$this->tags           = $this->import_tags($wp_post_id);
 
