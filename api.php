@@ -4,16 +4,7 @@ class GRAPE_API {
     function __construct($api_token=null, $api_url=null) {
         $this->api_token = $api_token;
         $this->api_url = $api_url;
-
-        if (null === $api_token) {
-            $options = grape_get_options();
-            $this->api_token = $options['api_token'];
-        }
-
-        if (null === $api_url) {
-            $options = grape_get_options();
-            $this->api_url = $options['api_url'];
-        }
+        $this->options = grape_get_options();
 
         /* user agent */
         $this->client = 'Wordpress/'.get_bloginfo('version').' Grape/'.GRAPE_VERSION;

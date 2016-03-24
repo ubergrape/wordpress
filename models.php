@@ -72,6 +72,10 @@ class GRAPE_Post {
         $this->image_url    = $this->find_a_post_image_url();
     }
 
+    function get_connections() {
+        return $this->options['syncable_post_types'][$this->wp_type];
+    }
+
     function serialize() {
         $post_format = get_post_format($this->wp_id);
         $post_format = $post_format ? (' (' . $post_format . ')') : '';
@@ -206,7 +210,8 @@ class GRAPE_Post {
         // also publish posts with a publish date in the future
 
         if (
-            (!array_key_exists($this->wp_type, $this->options['post_types']) || 1 != $this->options['post_types'][$this->wp_type]) ||
+            (!array_key_exists($this->wp_type, $this->options['syncable_post_types'])) ||
+            (count($this->options['syncable_post_types'][$this->wp_type]) === 0) ||
             ('private' == $this->post_status) ||
             ('publish' != $this->post_status && 'future' != $this->post_status)
         ) {

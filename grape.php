@@ -69,16 +69,6 @@ function grape_plugin_dir_url() {
     return plugins_url(basename(dirname(__FILE__))) . '/';
 }
 
-function grape_is_current_user_connected() {
-    $options = grape_get_options();
-
-    if (isset($options['api_success']) && true === $options['api_success']) {
-        return true;
-    }
-
-    return false;
-}
-
 add_action('publish_post', array('Grape_Controller','post'));
 add_action('publish_future_post', array('Grape_Controller','post'));
 add_action('draft_to_private', array('Grape_Controller','post'));

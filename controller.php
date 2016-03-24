@@ -4,7 +4,7 @@ class Grape_Controller {
     static function post($post_ID, $force) {
         // global $grape_synced;
 
-        if (!Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
+        if (!Grape_Controller::check_nonce()) {
             return $post_ID; // nothing to do here
         }
 
@@ -20,10 +20,10 @@ class Grape_Controller {
             return Grape_Controller::edit($post_ID);
         }
 
-        $api = new GRAPE_API();
-        $respone = $api->create($post);
-
-        // $grape_synced = $post_ID;
+        foreach ($post->get_connections() as $connection) {
+            $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
+            $response = $api->create($post);
+        }
 
         return $post_ID;
     }
@@ -31,7 +31,7 @@ class Grape_Controller {
     static function edit($post_ID) {
         // global $grape_synced;
 
-        if (!Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
+        if (!Grape_Controller::check_nonce()) {
             return $post_ID; // nothing to do here
         }
 
@@ -47,10 +47,10 @@ class Grape_Controller {
             return Grape_Controller::delete($post_ID);
         }
 
-        $api = new GRAPE_API();
-        $api->update($post);
-
-        // $grape_synced = $post_ID;
+        foreach ($post->get_connections() as $connection) {
+            $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
+            $api->update($post);
+        }
 
         return $post_ID;
     }
@@ -58,7 +58,7 @@ class Grape_Controller {
     static function delete($post_ID) {
         // global $grape_synced;
 
-        if (!Grape_Controller::check_nonce() || !Grape_Controller::has_valid_api_token()) {
+        if (!Grape_Controller::check_nonce()) {
             return $post_ID;
         }
 
@@ -69,24 +69,12 @@ class Grape_Controller {
             return $post_ID;
         }
 
-        $api = new GRAPE_API();
-        $api->delete($post);
-        // $grape_synced = $post_ID;
-
-        return $post_ID;
-    }
-
-
-
-
-    static function has_valid_api_token() {
-        if (!grape_is_current_user_connected()) {
-            update_option('grape_error_notice', array("no_api_token" => "No valid API Token or URL set."));
-            grape_debug("controller: NO VALID API TOKEN/URL");
-            return false;
+        foreach ($post->get_connections() as $connection) {
+            $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
+            $api->delete($post);
         }
 
-        return true;
+        return $post_ID;
     }
 
     static function check_nonce() {
