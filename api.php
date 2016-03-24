@@ -59,7 +59,7 @@ class GRAPE_API {
     function delete_everything() {
         $this->log(__FUNCTION__);
 
-        $url = $post->api_url;
+        $url = $this->api_url;
         $args = array(
             'method' => 'DELETE',
             'headers' => $this->get_headers()
