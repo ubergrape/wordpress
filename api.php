@@ -53,6 +53,12 @@ class GRAPE_API {
             return $response_decoded['detail'];
         }
 
+        if (substr($result['response']['code'], 0, 1) === "5") {
+            return "Server Error (". $result['response']['code'] . " " . $result['response']['message'] . ")";
+        }
+
+        $this->log(__FUNCTION__, print_r($result, true));
+
         return "Unexpected Error";
     }
 
