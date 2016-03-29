@@ -83,7 +83,7 @@ class GRAPE_API {
 
         $url = $this->api_url;
         $post_data = $post->serialize();
-        $post_data['eid'] = $post->wp_id;
+        $post_data['eid'] = $post->get_eid();
         $args = array(
             'headers' => $this->get_headers(),
             'body' => json_encode($post_data, JSON_UNESCAPED_SLASHES)
@@ -125,7 +125,7 @@ class GRAPE_API {
     function update($post) {
         $this->log(__FUNCTION__);
 
-        $url = $post->grape_href;
+        $url = $post->get_grape_href();
         $post_data = $post->serialize();
         $args = array(
             'method' => 'PUT',
@@ -152,7 +152,7 @@ class GRAPE_API {
     function delete($post) {
         $this->log(__FUNCTION__);
 
-        $url = $post->grape_href;
+        $url = $post->get_grape_href();
         $args = array(
             'method' => 'DELETE',
             'headers' => $this->get_headers(),

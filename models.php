@@ -72,10 +72,6 @@ class GRAPE_Post {
         $this->image_url    = $this->find_a_post_image_url();
     }
 
-    function get_connections() {
-        return $this->options['syncable_post_types'][$this->wp_type];
-    }
-
     function serialize() {
         $post_format = get_post_format($this->wp_id);
         $post_format = $post_format ? (' (' . $post_format . ')') : '';
@@ -135,6 +131,18 @@ class GRAPE_Post {
         }
 
         return $tags;
+    }
+
+    function get_eid() {
+        return $this->wp_id;
+    }
+
+    function get_grape_href() {
+        return $this->grape_href;
+    }
+
+    function get_connections() {
+        return $this->options['syncable_post_types'][$this->wp_type];
     }
 
     function set_grape_href($grape_href) {
