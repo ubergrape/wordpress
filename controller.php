@@ -8,7 +8,7 @@ class Grape_Controller {
             return $post_ID; // nothing to do here
         }
 
-        $post = new GRAPE_Post($post_ID);
+        $post = new GrapePost($post_ID);
 
         if (!$post->should_be_synced()) {
             grape_debug("controller: post -> STOP (should not be synced)");
@@ -35,7 +35,7 @@ class Grape_Controller {
             return $post_ID; // nothing to do here
         }
 
-        $post = new GRAPE_Post($post_ID);
+        $post = new GrapePost($post_ID);
 
         if (!$post->was_synced()) {
             grape_debug("controller: edit -> post (was never synced before)");
@@ -62,7 +62,7 @@ class Grape_Controller {
             return $post_ID;
         }
 
-        $post = new GRAPE_Post($post_ID);
+        $post = new GrapePost($post_ID);
 
         if (!$post->was_synced()) {
             grape_debug("controller: delete -> STOP (was never synced before)");

@@ -7,7 +7,7 @@ function grape_base64_encode_image ($filename=string,$filetype=string) {
     }
 }
 
-class GRAPE_Post {
+class GrapePost {
     public $wp_post;
     public $wp_id = 0;
     public $id = 0;
