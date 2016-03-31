@@ -69,15 +69,15 @@ function grape_plugin_dir_url() {
     return plugins_url(basename(dirname(__FILE__))) . '/';
 }
 
-add_action('publish_post', array('Grape_Controller','post'));
-add_action('publish_future_post', array('Grape_Controller','post'));
-add_action('draft_to_private', array('Grape_Controller','post'));
-add_action('new_to_private', array('Grape_Controller','post'));
-add_action('pending_to_private', array('Grape_Controller','post'));
-add_action('private_to_public', array('Grape_Controller','edit'));
-add_action('private_to_password', array('Grape_Controller','edit'));
-add_action('untrashed_post', array('Grape_Controller','edit'));
-add_action('edit_post', array('Grape_Controller','edit'));
-add_action('delete_post', array('Grape_Controller','delete'));
+add_action('publish_post', array('GrapePostController','post'));
+add_action('publish_future_post', array('GrapePostController','post'));
+add_action('draft_to_private', array('GrapePostController','post'));
+add_action('new_to_private', array('GrapePostController','post'));
+add_action('pending_to_private', array('GrapePostController','post'));
+add_action('private_to_public', array('GrapePostController','edit'));
+add_action('private_to_password', array('GrapePostController','edit'));
+add_action('untrashed_post', array('GrapePostController','edit'));
+add_action('edit_post', array('GrapePostController','edit'));
+add_action('delete_post', array('GrapePostController','delete'));
 
 add_action('admin_menu', 'grape_add_menu'); // Add menu to admin

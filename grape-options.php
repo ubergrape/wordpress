@@ -254,7 +254,7 @@ function grape_full_sync() {
     $current_post = $posts[$post_id];
 
     grape_debug('Full Sync: post id ' . $current_post->ID);
-    Grape_Controller::post($current_post->ID, true);
+    GrapePostController::post($current_post->ID, true);
 
     $response = array(
         'postsTotal' => $post_count,

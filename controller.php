@@ -1,10 +1,10 @@
 <?php
 
-class Grape_Controller {
+class GrapePostController {
     static function post($post_ID, $force) {
         // global $grape_synced;
 
-        if (!Grape_Controller::check_nonce()) {
+        if (!GrapePostController::check_nonce()) {
             return $post_ID; // nothing to do here
         }
 
@@ -17,7 +17,7 @@ class Grape_Controller {
 
         if ($post->was_synced() && !$force) {
             grape_debug("controller: post -> edit (was synced before)");
-            return Grape_Controller::edit($post_ID);
+            return GrapePostController::edit($post_ID);
         }
 
         foreach ($post->get_connections() as $connection) {
@@ -31,7 +31,7 @@ class Grape_Controller {
     static function edit($post_ID) {
         // global $grape_synced;
 
-        if (!Grape_Controller::check_nonce()) {
+        if (!GrapePostController::check_nonce()) {
             return $post_ID; // nothing to do here
         }
 
@@ -39,12 +39,12 @@ class Grape_Controller {
 
         if (!$post->was_synced()) {
             grape_debug("controller: edit -> post (was never synced before)");
-            return Grape_Controller::post($post_ID);
+            return GrapePostController::post($post_ID);
         }
 
         if ($post->should_be_deleted_because_private()) {
             grape_debug("controller: edit -> delete (should be deleted, private)");
-            return Grape_Controller::delete($post_ID);
+            return GrapePostController::delete($post_ID);
         }
 
         foreach ($post->get_connections() as $connection) {
@@ -58,7 +58,7 @@ class Grape_Controller {
     static function delete($post_ID) {
         // global $grape_synced;
 
-        if (!Grape_Controller::check_nonce()) {
+        if (!GrapePostController::check_nonce()) {
             return $post_ID;
         }
 
