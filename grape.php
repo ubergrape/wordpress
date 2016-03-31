@@ -4,14 +4,14 @@ Plugin Name: Grape
 Version: 0.2.4
 Description:
 Author: chatgrape.com, Stefan Kröner
-Author URI: http://www.newsgrape.com/
+Author URI: http://www.chatgrape.com/
 */
 
 /* Again, the version. used in api requests in the user agent string */
 define('GRAPE_VERSION', '0.2.4');
 
 /* Enable debug logging */
-define('GRAPE_DEBUG', false);
+define('GRAPE_DEBUG', true);
 
 /* GRAPE_DEBUG_FILE enables logging to "debug.log" in plugin folder
  * if this is set to false, debug messages go to the webservers error log
