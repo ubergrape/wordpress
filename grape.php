@@ -3,7 +3,7 @@
 Plugin Name: Grape
 Version: 0.2.4
 Description:
-Author: chatgrape.com, Stefan Kröner
+Author: Grape
 Author URI: http://www.chatgrape.com/
 */
 
