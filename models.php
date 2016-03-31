@@ -7,35 +7,95 @@ function grape_base64_encode_image ($filename=string,$filetype=string) {
     }
 }
 
-class GrapePost {
-    public $wp_post;
-    public $wp_id = 0;
-    public $id = 0;
-    public $wp_type;
-    public $slug = "";
-    public $url = "";
-    public $status = "";
-    public $pub_date = 0;
-    public $title = "";
-    public $title_plain = "";
-    public $content = "";
-    public $description = "";
-    public $language = "en";
-    public $tags = array();
-    public $options = array();
 
-    function __construct($wp_post_id = NULL) {
+abstract class GrapeSyncable {
+    protected $options = array();
+    protected $id = 0;
+    protected $url = "";
+    protected $description = "";
+
+    protected $title = "";
+    abstract function serialize();
+    abstract function get_eid();
+    abstract function get_grape_href();
+    abstract function get_connections();
+    abstract function set_grape_href($grape_href);
+    abstract function set_grape_indexed($grape_indexed);
+    abstract protected function import_wp_object($id, $taxonomy);
+
+    public function __construct($id = NULL, $taxonomy = NULL) {
         $this->options = grape_get_options();
-        if (NULL != $wp_post_id) {
-            $this->import_wp_object($wp_post_id);
+        if (NULL != $id) {
+            $this->import_wp_object($id, $taxonomy);
         }
     }
 
-    function __toString() {
+    public function __toString() {
         return $this->title." (".$this->url.")";
     }
+}
 
-    function import_wp_object($wp_post_id) {
+class GrapeTaxonomy extends GrapeSyncable{
+    // TODO: implement
+
+    public function get_eid() {
+
+    }
+
+    public function get_grape_href() {
+
+    }
+
+    public function get_connections() {
+
+    }
+
+    public function set_grape_href($grape_href) {
+
+    }
+
+    public function set_grape_indexed($grape_indexed) {
+
+    }
+
+    protected function import_wp_object($wp_term_id, $taxonomy) {
+        $wp_term = get_term($wp_term_id, $taxonomy);
+
+        $this->wp_term      = $wp_term;
+        $this->wp_id        = $wp_term_id;
+        $this->grape_href   = get_term_meta($wp_term_id, '_grape_href', true);
+        $this->grape_indexed= get_term_meta($wp_term_id, '_grape_indexed', true);
+        $this->wp_type      = $taxonomy;
+        $this->url          = '';
+        $this->title        = html_entity_decode(strip_tags(get_the_title($wp_term_id)));
+        $this->description  = term_description($wp_term_id, $taxonomy);
+    }
+
+    public function serialize() {
+        $serialized = array(
+            'name' => $this->title,
+            'url' => $this->url,
+            'description' => $this->description,
+        );
+
+        return $serialized;
+    }
+}
+
+
+class GrapePost extends GrapeSyncable{
+    private $wp_post;
+    private $wp_id = 0;
+    private $wp_type;
+    private $slug = "";
+    private $status = "";
+    private $pub_date = 0;
+    private $title_plain = "";
+    private $content = "";
+    private $language = "en";
+    private $tags = array();
+
+    protected function import_wp_object($wp_post_id, $taxonomy) {
         $wp_post = get_post($wp_post_id);
 
         $the_content = $wp_post->post_content;
@@ -72,7 +132,7 @@ class GrapePost {
         $this->image_url    = $this->find_a_post_image_url();
     }
 
-    function serialize() {
+    public function serialize() {
         $post_format = get_post_format($this->wp_id);
         $post_format = $post_format ? (' (' . $post_format . ')') : '';
         $post_type = get_post_type_object(get_post_type($this->wp_id))->labels->singular_name;
@@ -108,7 +168,7 @@ class GrapePost {
         return $serialized;
     }
 
-    function import_tags($wp_post_id) {
+    private function import_tags($wp_post_id) {
         $tags = array();
 
         $options = grape_get_options();
@@ -133,24 +193,24 @@ class GrapePost {
         return $tags;
     }
 
-    function get_eid() {
+    public function get_eid() {
         return $this->wp_id;
     }
 
-    function get_grape_href() {
+    public function get_grape_href() {
         return $this->grape_href;
     }
 
-    function get_connections() {
-        return $this->options['syncable_post_types'][$this->wp_type];
+    public function get_connections() {
+        return $this->options['syncables']['post_type'][$this->wp_type];
     }
 
-    function set_grape_href($grape_href) {
+    public function set_grape_href($grape_href) {
         $this->grape_href = $grape_href;
         update_post_meta($this->wp_id, '_grape_href', $grape_href);
     }
 
-    function set_grape_indexed($grape_indexed) {
+    public function set_grape_indexed($grape_indexed) {
         $this->grape_indexed = $grape_indexed;
         update_post_meta($this->wp_id, '_grape_indexed', $grape_indexed);
     }
@@ -162,7 +222,7 @@ class GrapePost {
      *
      * attention: modifies $this->content
      */
-    function find_a_post_image_url() {
+    private function find_a_post_image_url() {
         $image_url = false;
 
         // Check for post image
@@ -212,14 +272,14 @@ class GrapePost {
         return $image_url;
     }
 
-    function should_be_synced() {
+    public function should_be_synced() {
         // Don't sync if the post has the wrong post type
         // or it's private
         // also publish posts with a publish date in the future
 
         if (
-            (!array_key_exists($this->wp_type, $this->options['syncable_post_types'])) ||
-            (count($this->options['syncable_post_types'][$this->wp_type]) === 0) ||
+            (!array_key_exists($this->wp_type, $this->options['syncables']['post_type'])) ||
+            (count($this->options['syncables']['post_type'][$this->wp_type]) === 0) ||
             ('private' == $this->post_status) ||
             ('publish' != $this->post_status && 'future' != $this->post_status)
         ) {
@@ -229,7 +289,7 @@ class GrapePost {
         return true;
     }
 
-    function should_be_deleted_because_private(){
+    public function should_be_deleted_because_private(){
         // If ...
         // - It's changed to private, and we've chosen not to sync private entries
         // - It now isn't published or private (trash, pending, draft, etc.)
@@ -246,12 +306,12 @@ class GrapePost {
         return false;
     }
 
-    function was_synced() {
+    public function was_synced() {
         return ("" != $this->grape_href && null != $this->grape_href);
 
     }
 
-    function smartTruncate($string, $limit, $break=" ", $pad="...") {
+    private function smartTruncate($string, $limit, $break=" ", $pad="...") {
         // Original PHP code by Chirp Internet: www.chirp.com.au
         // return with no change if string is shorter than $limit
         if(strlen($string) <= $limit) return $string;

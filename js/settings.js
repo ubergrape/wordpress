@@ -74,8 +74,17 @@ jQuery(function($) {
 
 	});
 
-	$('#button-add-post-type').click(function(event) {
+	$('#button-add').click(function(event) {
 		var newForm = $('#div-add-post-type').clone();
+		$('form.taxonomy', newForm).css('display', 'none');
+
+		$('select[name="syncable_type"]', newForm).on('change', function(event){
+			var value = $('option:selected', this).val();
+			var not_value = $('option:not(:selected)', this).val();
+			console.log(not_value, value);
+			$('form.' + not_value, newForm).css('display', 'none')
+			$('form.' + value, newForm).css('display', '')
+		});
 		$('form', newForm).on('submit', function(event) {
 			event.preventDefault();
 			var self = this;
@@ -83,18 +92,23 @@ jQuery(function($) {
 			$.post(ajaxurl, data, function(response) {
 				response = $.parseJSON(response);
 				if (response['status'] === "success") {
-					var post_type = $(self['post_type']).val();
-					var post_type_label = $('option:selected', self['post_type']).text().trim();
+					var syncable_type = $(self['syncable_type']).val();
+					var type = $(self['type']).val();
+					var type_label = $('option:selected', self['type']).text().trim();
 					var api_url = $(self['api_url']).val();
 					var custom_title_field = $(self['custom_title_field']).val();
-					debugger;
-					syncable_post_types['post_types'][post_type].push({
+					var custom_url = $(self['custom_url']).val();
+
+					// TODO [type] might not exist yet
+
+					syncables[syncable_type][type].push({
 						api_url: api_url,
-						post_type: post_type,
-						post_type_label: post_type_label,
-						custom_title_field: custom_title_field
+						type: type,
+						type_label: type_label,
+						custom_title_field: custom_title_field,
+						custom_url: custom_url
 					});
-					render_syncable_post_types_list();
+					render_syncables_list();
 					// append to list
 					//$('.syncable-post-types').append("<li>" + option_label + "<br><span>" + api_url + "</span></li>");
 					// remove form
@@ -108,14 +122,16 @@ jQuery(function($) {
 		$('#placeholder-add-post-type').append(newForm);
 	});
 
-	$(document).on('click','.delete-post-type', function(event){
+	$(document).on('click','.delete-syncable', function(event){
 		event.preventDefault();
 		var self = this;
-		var post_type = $(self).attr('data-post-type');
+		var syncable_type = $(self).attr('data-syncable-type');
+		var type = $(self).attr('data-type');
 		var id = $(self).attr('data-id');
 		var data = {
-			action: "grape_delete_post_type",
-			post_type: post_type,
+			action: "grape_delete_syncable",
+			syncable_type: syncable_type,
+			type: type,
 			id: id
 		};
 		$.post(ajaxurl, data, function(response) {
@@ -123,19 +139,19 @@ jQuery(function($) {
 			if (response['status'] === "success") {
 				// remove entry
 				// $(self).parent('li').remove()
-				syncable_post_types['post_types'][post_type].splice(id,1);
-				render_syncable_post_types_list();
+				syncables[syncable_type][type].splice(id,1);
+				render_syncables_list();
 			} else {
 				alert(response['error']);
 			}
 		});
 	});
 
-	function render_syncable_post_types_list() {
+	function render_syncables_list() {
 		var source = $('#template1').html();
 		var template = Handlebars.compile(source);
-		var result = template(syncable_post_types);
-		$('#placeholder-syncable-post-types').html(result);
+		var result = template(syncables);
+		$('#placeholder-syncables').html(result);
 	}
-	render_syncable_post_types_list();
+	render_syncables_list();
 });
