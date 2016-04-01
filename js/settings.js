@@ -30,9 +30,16 @@ jQuery(function($) {
 		$('.grape-progress-done').removeClass('hidden');
 	}
 
+
 	$('#grape-full-sync').click(function(event) {
 		event.preventDefault();
+
 		$('.grape-progress-container').removeClass('hidden');
+
+		// reset progress bars
+		setProgressPercentage(0);
+		$('.grape-progress-bar').css("left", 0);
+		$('.grape-progress-done').addClass('hidden');
 
 		var data = {
 			'action': 'grape_full_sync'
