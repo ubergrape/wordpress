@@ -302,20 +302,10 @@ function grape_display_options() {
     <h1><?php _e('Grape Settings', 'grape'); ?></h1>
 
     <form method="post" id="grape" action="options.php">
-        <fieldset class="options">
-            <h2 class="title"><?php _e('Index Options', 'grape'); ?></h2>
-            <table class="form-table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="button" id="button-add" class="button" value="<?php _e('Add', 'grape'); ?>" />
-                            <div id="placeholder-add-post-type"></div>
-                            <div id="placeholder-syncables"></div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </fieldset>
+        <h2 class="title"><?php _e('Index Options', 'grape'); ?></h2>
+        <input type="button" id="button-add" class="button" value="<?php _e('Add', 'grape'); ?>" />
+        <div id="placeholder-add-post-type"></div>
+        <div id="placeholder-syncables"></div>
     </form>
 
     <script id="template1" type="text/x-handlebars-template">
