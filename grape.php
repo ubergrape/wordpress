@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Grape
-Version: 0.3.0
+Version: 0.3.1
 Description:
 Author: Grape
 Author URI: http://www.chatgrape.com/
 */
 
 /* Again, the version. used in api requests in the user agent string */
-define('GRAPE_VERSION', '0.3.0');
+define('GRAPE_VERSION', '0.3.1');
 
 /* Enable debug logging */
 define('GRAPE_DEBUG', false);
