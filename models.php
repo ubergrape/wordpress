@@ -10,18 +10,22 @@ function grape_base64_encode_image ($filename=string,$filetype=string) {
 
 abstract class GrapeSyncable {
     protected $options = array();
-    protected $id = 0;
-    protected $url = "";
-    protected $description = "";
+    public $wp_id = 0;
+    public $id = 0;
+    public $url = "";
+    public $description = "";
+    public $title = "";
 
-    protected $title = "";
     abstract function serialize();
-    abstract function get_eid();
     abstract function get_grape_href();
     abstract function get_connections();
     abstract function set_grape_href($grape_href);
     abstract function set_grape_indexed($grape_indexed);
     abstract protected function import_wp_object($id, $taxonomy);
+
+    public function get_eid() {
+        return $this->wp_id;
+    }
 
     public function __construct($id = NULL, $taxonomy = NULL) {
         $this->options = grape_get_options();
@@ -85,7 +89,6 @@ class GrapeTaxonomy extends GrapeSyncable{
 
 class GrapePost extends GrapeSyncable{
     private $wp_post;
-    private $wp_id = 0;
     private $wp_type;
     private $slug = "";
     private $status = "";
@@ -213,6 +216,10 @@ class GrapePost extends GrapeSyncable{
     public function set_grape_indexed($grape_indexed) {
         $this->grape_indexed = $grape_indexed;
         update_post_meta($this->wp_id, '_grape_indexed', $grape_indexed);
+    }
+
+    public function get_wp_type() {
+        return $this->wp_type;
     }
 
     /* finds a post image:
