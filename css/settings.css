@@ -95,6 +95,10 @@
     margin-top: 20px;
 }
 
+#placeholder-syncables li span.post-type {
+    font-weight: bold;
+}
+
 #placeholder-syncables li span.api-url,
 #placeholder-syncables li span.custom-url
 {

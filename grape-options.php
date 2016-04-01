@@ -313,7 +313,7 @@ function grape_display_options() {
             {{#each post_type}}
                 {{#each this}}
                     <li>
-                        <span class="post-type">{{this.post_type_label}}</span><br>
+                        <span class="post-type">{{this.type_label}}</span><br>
                         <span class="api-url">{{this.api_url}}</span><br>
                         {{#if this.custom_title_field}}
                             <span class="custom-title-field">Custom title field: {{this.custom_title_field}}</span><br>
@@ -347,7 +347,7 @@ function grape_display_options() {
             foreach($syncable_post_types as $type => $connections) {
                 foreach($connections as $index => $connection) {
                     $syncable_post_types[$type][$index]['index'] = $index;
-                    $syncable_post_types[$type][$index]['post_type_label'] = $post_types[$type]->label;
+                    $syncable_post_types[$type][$index]['type_label'] = $post_types[$type]->label;
                 }
             }
             $syncable_taxonomies = $options['syncables']['taxonomy'];

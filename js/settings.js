@@ -106,8 +106,10 @@ jQuery(function($) {
 					var custom_title_field = $(self['custom_title_field']).val();
 					var custom_url = $(self['custom_url']).val();
 
-					// TODO [type] might not exist yet
-
+					// apend to list
+					if (!syncables[syncable_type].hasOwnProperty(type)) {
+						syncables[syncable_type][type] = [];
+					}
 					syncables[syncable_type][type].push({
 						api_url: api_url,
 						type: type,
@@ -115,9 +117,10 @@ jQuery(function($) {
 						custom_title_field: custom_title_field,
 						custom_url: custom_url
 					});
+
+					// render
 					render_syncables_list();
-					// append to list
-					//$('.syncable-post-types').append("<li>" + option_label + "<br><span>" + api_url + "</span></li>");
+
 					// remove form
 					$(self).closest('.div-add-post-type').remove()
 				} else {
