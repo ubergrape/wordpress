@@ -315,7 +315,9 @@ function grape_display_options() {
                     <li>
                         <span class="post-type">{{this.post_type_label}}</span><br>
                         <span class="api-url">{{this.api_url}}</span><br>
-                        <span class="custom-title-field">{{this.custom_title_field}}</span><br>
+                        {{#if this.custom_title_field}}
+                            <span class="custom-title-field">Custom title field: {{this.custom_title_field}}</span><br>
+                        {{/if}}
                         <a href="#" class="delete-syncable" data-syncable-type="post_type" data-type="{{this.type}}" data-id="{{this.index}}">Delete</a>
                     </li>
                 {{/each}}
