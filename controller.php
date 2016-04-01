@@ -20,6 +20,8 @@ class GrapePostController {
             return GrapePostController::edit($post_ID);
         }
 
+        do_action('grape_post_create', $post);
+
         foreach ($post->get_connections() as $connection) {
             $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
             $response = $api->create($post);
@@ -47,6 +49,8 @@ class GrapePostController {
             return GrapePostController::delete($post_ID);
         }
 
+        do_action('grape_post_update', $post);
+
         foreach ($post->get_connections() as $connection) {
             $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
             $api->update($post);
@@ -68,6 +72,8 @@ class GrapePostController {
             grape_debug("controller: delete -> STOP (was never synced before)");
             return $post_ID;
         }
+
+        do_action('grape_post_delete', $post);
 
         foreach ($post->get_connections() as $connection) {
             $api = new GRAPE_API($connection['api_token'], $connection['api_url']);

@@ -379,6 +379,8 @@ function grape_display_options() {
         <?php _e('done'); ?> <span class="dashicons dashicons-yes"></span>
     </span>
 
+    <?php do_action('grape_tools'); ?>
+
     <?php if(GRAPE_DEBUG): ?>
         <hr>
         <h2>Options (raw)</h2>
