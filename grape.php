@@ -11,7 +11,7 @@ Author URI: http://www.chatgrape.com/
 define('GRAPE_VERSION', '0.3.0');
 
 /* Enable debug logging */
-define('GRAPE_DEBUG', true);
+define('GRAPE_DEBUG', false);
 
 /* GRAPE_DEBUG_FILE enables logging to "debug.log" in plugin folder
  * if this is set to false, debug messages go to the webservers error log
