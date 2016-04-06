@@ -1,7 +1,7 @@
 <?php
 
 class GrapePostController {
-    static function post($post_ID, $force) {
+    static function post($post_ID, $force=false) {
         // global $grape_synced;
 
         if (!GrapePostController::check_nonce()) {
