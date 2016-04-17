@@ -116,7 +116,8 @@ class GRAPE_API {
         $response_decoded = json_decode($result['body'], true);
         grape_debug(print_r($response_decoded, true));
 
-        $post->set_grape_href($response_decoded['href']);
+        // grape might change its internal id but the external id (=wordpress id) is stable
+        $post->set_grape_href($response_decoded['href_by_external_id']);
         $post->set_grape_indexed($response_decoded['indexed']);
 
         $this->log(__FUNCTION__, 'done');
