@@ -218,6 +218,28 @@ class GrapePost extends GrapeSyncable{
         update_post_meta($this->wp_id, '_grape_indexed', $grape_indexed);
     }
 
+    /* This is a hack to support custom titles on a connection level.
+     *
+     * It would probably make more sense to set custom titles at a post type
+     * level but this will need a new UI.
+     * With this solution, the grape model will have the wrong title set in the
+     * beginning, but the controller will change the title when he knows which
+     * connection is being used.
+     *
+     * works with classic post meta fields and "Advanced Custom Fields".
+     */
+    public function use_custom_title_field($custom_title_field=None) {
+        if ($custom_title_field != None) {
+            if (function_exists('get_field')) {
+                // Advanced Custom Fields
+                $this->title = get_field($custom_title_field, $this->wp_id);
+            } else {
+                // Classic post meta
+                $this->title = get_post_meta($this->wp_id, $custom_title_field, true);
+            }
+        }
+    }
+
     public function get_wp_type() {
         return $this->wp_type;
     }

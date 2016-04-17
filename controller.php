@@ -23,6 +23,7 @@ class GrapePostController {
         do_action('grape_post_create', $post);
 
         foreach ($post->get_connections() as $connection) {
+            $post->use_custom_title_field($connection['custom_title_field']);
             $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
             $response = $api->create($post);
         }
@@ -52,6 +53,7 @@ class GrapePostController {
         do_action('grape_post_update', $post);
 
         foreach ($post->get_connections() as $connection) {
+            $post->use_custom_title_field($connection['custom_title_field']);
             $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
             $api->update($post);
         }
@@ -76,6 +78,7 @@ class GrapePostController {
         do_action('grape_post_delete', $post);
 
         foreach ($post->get_connections() as $connection) {
+            $post->use_custom_title_field($connection['custom_title_field']);
             $api = new GRAPE_API($connection['api_token'], $connection['api_url']);
             $api->delete($post);
         }
