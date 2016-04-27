@@ -16,51 +16,6 @@ function grape_get_options() {
     return array_merge( $defaults, $options );
 }
 
-// Validation/sanitization. Add errors to $msg[].
-function grape_validate_options($input) {
-    $options = get_option('grape');
-
-    $msg = array();
-    $msgtype = 'error';
-
-    // don't lose fields
-    $input['api_success'] = $options['api_success'];
-
-    // API token
-    // only test the connection if api token or url change or previous attempt fails
-    if (isset($input['api_token']) && isset($input['api_url']) &&
-        ($input['api_token'] != $options['api_token'] || $input['api_url'] != $options['api_url'] || false == $options['api_success'])) {
-        $input['api_success'] = false;
-
-        $api_token = $input['api_token'];
-        $api_url = $input['api_url'];
-
-        $api = new GRAPE_API($api_token, $api_url);
-        $result = $api->test_connection();
-        if ($result === true) {
-            $input['api_success'] = true;
-            $msg[] .= __('Sucessfully connected to Grape!', 'grape');
-            $msgtype = 'updated';
-        } else {
-            $msg[] .= __('Could not connect to Grape: ', 'grape') . $result;
-        }
-    }
-
-    // Send custom updated message
-    if( isset($input['api_token']) || isset($input['api_url']) || isset($input['post_types'])) {
-        $msg = implode('<br />', $msg);
-
-        if (empty($msg)) {
-            $msg = __('Settings saved.', 'grape');
-            $msgtype = 'updated';
-        }
-
-        add_settings_error( 'grape', 'grape', $msg, $msgtype );
-    }
-
-    return $input;
-}
-
 // ---- Options Page -----
 
 
@@ -82,7 +37,7 @@ function grape_add_menu() {
 
 /* Register settings */
 function grape_register_settings() {
-    register_setting( 'grape', 'grape', 'grape_validate_options');
+    register_setting( 'grape', 'grape');
 }
 
 /* Register JS */
