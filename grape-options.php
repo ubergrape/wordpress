@@ -318,6 +318,9 @@ function grape_display_options() {
         };
     </script>
 
+
+    <?php do_action('grape_index_options'); ?>
+
     <hr>
 
     <h2>Tools</h2>
