@@ -335,6 +335,7 @@ function grape_display_options() {
             <div class='grape-progress-text'></div>
         </div>
     </div>
+    <div class='grape-progress-error hidden'><div>
     <span class='grape-progress-done hidden'>
         <?php _e('done'); ?> <span class="dashicons dashicons-yes"></span>
     </span>

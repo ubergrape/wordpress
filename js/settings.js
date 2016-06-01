@@ -6,6 +6,20 @@ jQuery(function($) {
 		moveProgressBar();
 	});
 
+	var entityMap = {
+		"&": "&amp;",
+		"<": "&lt;",
+		">": "&gt;",
+		'"': '&quot;',
+		"'": '&#39;',
+		"/": '&#x2F;'
+	};
+
+	function escapeHtml(string) {
+		return String(string).replace(/[&<>"'\/]/g, function (s) {
+			return entityMap[s];
+		});
+	}
 
 	function moveProgressBar() {
 		$('.grape-progress-wrap').each(function(i, e) {
@@ -30,11 +44,16 @@ jQuery(function($) {
 		$('.grape-progress-done').removeClass('hidden');
 	}
 
+	function error() {
+		$('.grape-progress-container').addClass('hidden');
+		$('.grape-progress-error').removeClass('hidden');
+	}
 
 	$('#grape-full-sync').click(function(event) {
 		event.preventDefault();
 
 		$('.grape-progress-container').removeClass('hidden');
+		$('.grape-progress-error').addClass('hidden');
 
 		// reset progress bars
 		setProgressPercentage(0);
@@ -62,7 +81,12 @@ jQuery(function($) {
 					console.log("sync post nr", i, "id", nextPostId);
 				}
 				$.post(ajaxurl, data, function(response) {
-					response = JSON.parse(response);
+					try {
+						response = JSON.parse(response);
+					} catch(e) {
+						$('.grape-progress-error').html('<b>An error occured while syncing:</b><br>' + escapeHtml(e));
+						error();
+					}
 					postsTotal = response['postsTotal'];
 					nextPostId = response['nextPostId'];
 					i += 1;
