@@ -27,9 +27,9 @@ abstract class GrapeSyncable {
         return $this->wp_id;
     }
 
-    public function __construct($id = NULL, $taxonomy = NULL) {
+    public function __construct($id = null, $taxonomy = null) {
         $this->options = grape_get_options();
-        if (NULL != $id) {
+        if (null != $id) {
             $this->import_wp_object($id, $taxonomy);
         }
     }
@@ -228,8 +228,8 @@ class GrapePost extends GrapeSyncable{
      *
      * works with classic post meta fields and "Advanced Custom Fields".
      */
-    public function use_custom_title_field($custom_title_field=None) {
-        if ($custom_title_field != None) {
+    public function use_custom_title_field($custom_title_field=null) {
+        if (null != $custom_title_field) {
             if (function_exists('get_field')) {
                 // Advanced Custom Fields
                 $this->title = get_field($custom_title_field, $this->wp_id);
